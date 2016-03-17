@@ -14,7 +14,7 @@ from wtforms import Form, StringField, TextAreaField, validators
 class EntryForm(Form):
     title = StringField(u'Title', [validators.required(),
                         validators.length(max=128)])
-    text = TextAreaField(u'Entry', validators.required())
+    text = TextAreaField(u'Entry', [validators.required()])
 
 
 @view_config(route_name='list', renderer='templates/list_template.jinja2')
@@ -35,7 +35,8 @@ def detail_view(request):
 def add_entry_view(request):
     entry_form = EntryForm(request.POST)
     if request.method == 'POST' and entry_form.validate():
-        new_entry = Entry(title=entry_form.title, text=entry_form.text)
+        #import pdb; pdb.set_trace()
+        new_entry = Entry(title=entry_form.title.data, text=entry_form.text.data)
         DBSession.add(new_entry)
         # TODO: redirect to the new entry
     return {'title': 'Add Entry', 'form': entry_form}
