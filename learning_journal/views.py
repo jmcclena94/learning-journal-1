@@ -9,6 +9,13 @@ from .models import (
     Entry,
     )
 
+from wtforms import Form, StringField, TextAreaField, validators
+
+class EntryForm(Form):
+    title = StringField(u'Title', [validators.required(),
+                        validators.length(max=128)])
+    text = TextAreaField(u'Entry', validators.required())
+
 
 @view_config(route_name='list', renderer='templates/list_template.jinja2')
 def list_view(request):
@@ -26,6 +33,7 @@ def detail_view(request):
 @view_config(route_name='add_entry',
              renderer='templates/add_entry_template.jinja2')
 def add_entry_view(request):
+
     return {'title': 'Add Entry'}
 
 
