@@ -16,6 +16,12 @@ def list_view(request):
     return {'entries': entries}
 
 
+@view_config(route_name='detail', renderer='templates/detail_template.jinja2')
+def detail_view(request):
+    entries = DBSession.query(Entry).filter(Entry.id == request.matchdict['id'])
+    return {'entries': entries}
+
+
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
 # def my_view(request):
 #     try:
