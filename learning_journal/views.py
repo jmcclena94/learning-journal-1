@@ -33,8 +33,12 @@ def detail_view(request):
 @view_config(route_name='add_entry',
              renderer='templates/add_entry_template.jinja2')
 def add_entry_view(request):
-
-    return {'title': 'Add Entry'}
+    entry_form = EntryForm(request.POST)
+    if request.method == 'POST' and entry_form.validate():
+        new_entry = Entry(title=entry_form.title, text=entry_form.text)
+        DBSession.add(new_entry)
+        # TODO: redirect to the new entry
+    return {'title': 'Add Entry', 'form': entry_form}
 
 
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
