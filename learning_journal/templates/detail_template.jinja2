@@ -2,6 +2,7 @@
 {% block content %}
     {% for entry in entries %}
     <h1>{{ entry.title }}</h2>
+    <h3>{{ entry.created }}</h3>
     <p>{{ entry.text }}</p>
     {% endfor %}
 {% endblock content %}

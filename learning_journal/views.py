@@ -13,13 +13,18 @@ from .models import (
 @view_config(route_name='list', renderer='templates/list_template.jinja2')
 def list_view(request):
     entries = DBSession.query(Entry).order_by(desc(Entry.created))
-    return {'entries': entries}
+    return {'entries': entries, 'title': 'Learning Journal'}
 
 
 @view_config(route_name='detail', renderer='templates/detail_template.jinja2')
 def detail_view(request):
     entries = DBSession.query(Entry).filter(Entry.id == request.matchdict['id'])
-    return {'entries': entries}
+    title = "Learning Journal Entry {}".format(request.matchdict['id'])
+    return {'entries': entries, 'title': title}
+
+@view_config(route_name='add_entry', renderer='templates/add_entry_template.jinja2')
+def add_entry_view(request):
+    return {'title': 'Add Entry'}
 
 
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
