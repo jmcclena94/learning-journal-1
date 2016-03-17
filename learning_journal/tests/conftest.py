@@ -4,7 +4,7 @@ from learning_journal.models import DBSession, Base
 from sqlalchemy import create_engine
 
 
-TEST_DATABASE_URL = 'postgres://macuser:@localhost:5432/test_journal'
+TEST_DATABASE_URL = 'postgres://joemcc:@localhost:5432/test_db'
 
 
 @pytest.fixture(scope='session')
@@ -33,6 +33,7 @@ def dbtransaction(request, sqlengine):
     request.addfinalizer(teardown)
 
     return connection
+
 
 @pytest.fixture()
 def session(dbtransaction):

@@ -1,0 +1,7 @@
+{% extends "base.jinja2" %}
+{% block content %}
+{% for entry in entries %}
+<h2>{{ entry.title }}</h2>
+<h4>{{ entry.created }}</h4>
+{% endfor %}
+{% endblock content %}
