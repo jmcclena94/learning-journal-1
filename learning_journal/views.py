@@ -18,9 +18,9 @@ def list_view(request):
 
 @view_config(route_name='detail', renderer='templates/detail_template.jinja2')
 def detail_view(request):
-    entries = DBSession.query(Entry).filter(Entry.id == request.matchdict['id'])
+    entry = DBSession.query(Entry).filter(Entry.id == request.matchdict['id']).first()
     title = "Learning Journal Entry {}".format(request.matchdict['id'])
-    return {'entries': entries, 'title': title}
+    return {'entry': entry, 'title': title}
 
 @view_config(route_name='add_entry', renderer='templates/add_entry_template.jinja2')
 def add_entry_view(request):
