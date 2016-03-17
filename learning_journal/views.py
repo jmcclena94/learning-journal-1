@@ -2,6 +2,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 
 from sqlalchemy.exc import DBAPIError
+from sqlalchemy import desc
 
 from .models import (
     DBSession,
@@ -9,13 +10,32 @@ from .models import (
     )
 
 
-@view_config(route_name='home', renderer='templates/mytemplate.pt')
-def my_view(request):
-    try:
-        one = DBSession.query(Entry).filter(Entry.name == 'one').first()
-    except DBAPIError:
-        return Response(conn_err_msg, content_type='text/plain', status_int=500)
-    return {'one': one, 'project': 'learning-journal'}
+@view_config(route_name='list', renderer='templates/list_template.jinja2')
+def list_view(request):
+    entries = DBSession.query(Entry).order_by(desc(Entry.created))
+    return {'entries': entries, 'title': 'Learning Journal'}
+
+
+@view_config(route_name='detail', renderer='templates/detail_template.jinja2')
+def detail_view(request):
+    entry = DBSession.query(Entry).filter(
+        Entry.id == request.matchdict['id']).first()
+    title = "Learning Journal Entry {}".format(request.matchdict['id'])
+    return {'entry': entry, 'title': title}
+
+@view_config(route_name='add_entry',
+             renderer='templates/add_entry_template.jinja2')
+def add_entry_view(request):
+    return {'title': 'Add Entry'}
+
+
+# @view_config(route_name='home', renderer='templates/mytemplate.pt')
+# def my_view(request):
+#     try:
+#         one = DBSession.query(Entry).filter(Entry.name == 'one').first()
+#     except DBAPIError:
+#         return Response(conn_err_msg, content_type='text/plain', status_int=500)
+#     return {'one': one, 'project': 'learning-journal'}
 
 
 conn_err_msg = """\
@@ -33,4 +53,3 @@ might be caused by one of the following things:
 After you fix the problem, please restart the Pyramid application to
 try it again.
 """
-

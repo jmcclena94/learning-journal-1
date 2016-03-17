@@ -35,3 +35,9 @@ def main(argv=sys.argv):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
+    with transaction.manager:
+        entry1 = Entry(title=u"Here is a test entry.", text=u"I am a great test.")
+        DBSession.add(entry1)
+        entry2 = Entry(title=u"Oh hey here is another entry.", text=u'This is a better test.')
+        DBSession.add(entry2)
+
