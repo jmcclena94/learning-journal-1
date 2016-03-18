@@ -18,8 +18,10 @@ requires = [
     'zope.sqlalchemy',
     'waitress',
     'psycopg2',
+    'WTForms',
+    'markdown',
     ]
-test_requires = ['pytest', 'pytest-watch', 'tox']
+test_requires = ['pytest', 'pytest-watch', 'tox', 'webtest']
 dev_requires = ['ipython', 'pyramid-ipython']
 
 setup(name='learning-journal',

@@ -1,13 +1,22 @@
 from pyramid.response import Response
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
 
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 from sqlalchemy import desc
 
 from .models import (
     DBSession,
     Entry,
     )
+
+from wtforms import Form, StringField, TextAreaField, validators
+import markdown
+
+class EntryForm(Form):
+    title = StringField(u'Title', [validators.required(),
+                        validators.length(max=128)])
+    text = TextAreaField(u'Entry', [validators.required()])
 
 
 @view_config(route_name='list', renderer='templates/list_template.jinja2')
@@ -21,12 +30,39 @@ def detail_view(request):
     entry = DBSession.query(Entry).filter(
         Entry.id == request.matchdict['id']).first()
     title = "Learning Journal Entry {}".format(request.matchdict['id'])
-    return {'entry': entry, 'title': title}
+    return {'entry': entry, 'entry_text': markdown.markdown(entry.text), 'title': title}
+
 
 @view_config(route_name='add_entry',
              renderer='templates/add_entry_template.jinja2')
 def add_entry_view(request):
-    return {'title': 'Add Entry'}
+    entry_form = EntryForm(request.POST)
+    if request.method == 'POST' and entry_form.validate():
+        try:
+            new_entry = Entry(title=entry_form.title.data,
+                              text=entry_form.text.data)
+            DBSession.add(new_entry)
+        except SQLAlchemyError:
+            return {'title': 'Add Entry', 'form': entry_form,
+                    'error': 'Title Already Used'}
+        return HTTPFound(location='/')
+    return {'title': 'Add Entry', 'form': entry_form}
+
+
+@view_config(route_name='edit_entry',
+             renderer='templates/edit_entry_template.jinja2')
+def edit_entry_view(request):
+    current_entry = DBSession.query(Entry).filter(
+        Entry.id == request.matchdict['id']).first()
+    entry_form = EntryForm(request.GET, current_entry)
+    edited_form = EntryForm(request.POST)
+    if request.method == 'POST' and edited_form.validate():
+        current_entry.title = edited_form.title.data
+        current_entry.text = edited_form.text.data
+        return HTTPFound(location='/entry/{id}'.format(
+            id=request.matchdict['id']))
+    entry_form.populate_obj(current_entry)
+    return {'title': 'Add Entry', 'form': entry_form}
 
 
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
