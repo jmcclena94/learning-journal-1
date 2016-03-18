@@ -1,5 +1,6 @@
 from pyramid.response import Response
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
 
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy import desc
@@ -31,6 +32,7 @@ def detail_view(request):
     title = "Learning Journal Entry {}".format(request.matchdict['id'])
     return {'entry': entry, 'entry_text': markdown.markdown(entry.text), 'title': title}
 
+
 @view_config(route_name='add_entry',
              renderer='templates/add_entry_template.jinja2')
 def add_entry_view(request):
@@ -41,6 +43,19 @@ def add_entry_view(request):
         DBSession.add(new_entry)
         # TODO: redirect to the new entry
     return {'title': 'Add Entry', 'form': entry_form}
+
+
+@view_config(route_name='edit_entry',
+             renderer='templates/edit_entry_template.jinja2')
+def edit_entry_view(request):
+    edited_form = EntryForm(request.POST)
+    if request.method == 'POST' and edited_form.validate():
+        DBSession.update(Entry).where(
+            Entry.id == request.matchdict['id']).values(
+            title=edited_form.title.data, text=edited_form.title.data)
+        return HTTPFound(location='/entry/{id}'.format(
+            id=request.matchdict['id']))
+    return {'title': 'Add Entry', 'form': edited_form}
 
 
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')

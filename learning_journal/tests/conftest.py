@@ -38,10 +38,10 @@ def dbtransaction(request, sqlengine):
 @pytest.fixture()
 def one_entry(session):
     test_entry = Entry(title=u"Test Entry", text=u"Here is my test entry")
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     with transaction.manager:
         session.add(test_entry)
-    return test_entry
+    return session.query(Entry).filter(Entry.title==u"Test Entry").first()
 
 
 @pytest.fixture()
