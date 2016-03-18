@@ -38,10 +38,14 @@ def detail_view(request):
 def add_entry_view(request):
     entry_form = EntryForm(request.POST)
     if request.method == 'POST' and entry_form.validate():
-        #import pdb; pdb.set_trace()
-        new_entry = Entry(title=entry_form.title.data, text=entry_form.text.data)
-        DBSession.add(new_entry)
-        # TODO: redirect to the new entry
+        try:
+            new_entry = Entry(title=entry_form.title.data,
+                              text=entry_form.text.data)
+            DBSession.add(new_entry)
+        except DBAPIError:
+            return {'title': 'Add Entry', 'form': entry_form,
+                    'error': 'Title Already Used'}
+        return HTTPFound(location='/')
     return {'title': 'Add Entry', 'form': entry_form}
 
 

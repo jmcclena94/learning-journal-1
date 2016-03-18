@@ -4,4 +4,5 @@
     <a href="{{ request.route_url("detail", id = entry.id) }}"><h2>{{ entry.title }}</h2></a>
     <h4>{{ entry.created }}</h4>
     {% endfor %}
+<a href="{{ request.route_url("add_entry") }}">Add Entry</a>
 {% endblock content %}
