@@ -10,6 +10,7 @@ from .models import (
     )
 
 from wtforms import Form, StringField, TextAreaField, validators
+import markdown
 
 class EntryForm(Form):
     title = StringField(u'Title', [validators.required(),
@@ -28,7 +29,7 @@ def detail_view(request):
     entry = DBSession.query(Entry).filter(
         Entry.id == request.matchdict['id']).first()
     title = "Learning Journal Entry {}".format(request.matchdict['id'])
-    return {'entry': entry, 'title': title}
+    return {'entry': entry, 'entry_text': markdown.markdown(entry.text), 'title': title}
 
 @view_config(route_name='add_entry',
              renderer='templates/add_entry_template.jinja2')
