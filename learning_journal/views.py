@@ -2,7 +2,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 from sqlalchemy import desc
 
 from .models import (
@@ -42,7 +42,7 @@ def add_entry_view(request):
             new_entry = Entry(title=entry_form.title.data,
                               text=entry_form.text.data)
             DBSession.add(new_entry)
-        except DBAPIError:
+        except SQLAlchemyError:
             return {'title': 'Add Entry', 'form': entry_form,
                     'error': 'Title Already Used'}
         return HTTPFound(location='/')
