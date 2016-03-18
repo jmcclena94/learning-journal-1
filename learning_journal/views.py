@@ -48,14 +48,17 @@ def add_entry_view(request):
 @view_config(route_name='edit_entry',
              renderer='templates/edit_entry_template.jinja2')
 def edit_entry_view(request):
+    current_entry = DBSession.query(Entry).filter(
+        Entry.id == request.matchdict['id']).first()
+    entry_form = EntryForm(request.GET, current_entry)
     edited_form = EntryForm(request.POST)
     if request.method == 'POST' and edited_form.validate():
-        DBSession.update(Entry).where(
-            Entry.id == request.matchdict['id']).values(
-            title=edited_form.title.data, text=edited_form.title.data)
+        current_entry.title = edited_form.title.data
+        current_entry.text = edited_form.text.data
         return HTTPFound(location='/entry/{id}'.format(
             id=request.matchdict['id']))
-    return {'title': 'Add Entry', 'form': edited_form}
+    entry_form.populate_obj(current_entry)
+    return {'title': 'Add Entry', 'form': entry_form}
 
 
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
