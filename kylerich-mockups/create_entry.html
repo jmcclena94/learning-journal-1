@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Create Entry</title>
+    <title></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="kylerich-journal.css">
@@ -9,11 +9,28 @@
 </head>
 <body>
     <div class="titlebar container">
-        <!--link to home-->
-        <!--page name-->
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Home</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><p class="navbar-text">Entry Name</p></li>
+                    <li class="active" ><a href="/add_entry">Add Entry</a></li>
+                </ul>
+            </div>
+        </nav>
     </div>
-    <div class="creator container">
-        <!--form for entry creation-->
+    <div class="editor container">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title">
+        </div>
+        <div class="form-group">
+            <label for="text">Entry:</label>
+            <textarea class="form-control" rows="5" id="text"></textarea>
+        </div>
+        <button type="submit" class="btn btn-default">Create Entry</button>
     </div>
 </body>
 </html>
