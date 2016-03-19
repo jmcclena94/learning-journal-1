@@ -9,12 +9,22 @@
 </head>
 <body>
     <div class="titlebar container">
-        <!--link to home-->
-        <!--page name-->
-        <!--add entry link-->
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Home</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li>Entry Name</li>
+                    <li class="active" href="/add_entry">Add Entry</li>
+                </ul>
+            </div>
+        </nav>
     </div>
     <div class="entry_content container">
-        <!--entry title and text-->
+        <h2>Entry Name</h2>
+        <div class="well">Entry Text</div>
+        <a href="entry/#/edit" class="btn btn-default" role="button">Edit Entry</a>
     </div>
 </body>
 </html>
