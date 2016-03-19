@@ -12,25 +12,25 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/">Home</a>
+                    <a class="navbar-brand" href="/">Kyle's Journal</a>
                 </div>
                 <ul class="nav navbar-nav">
                     <li><p class="navbar-text">Entry Name</p></li>
-                    <li class="active" ><a href="/add_entry">Add Entry</a></li>
+                    <li><a href="/add_entry">Add Entry</a></li>
                 </ul>
             </div>
         </nav>
     </div>
     <div class="editor container">
         <div class="form-group">
-            <label for="title">Title:</label>
-            <input type="text" class="form-control" id="title">
+            <label class="control-label" for="title">Title:</label>
+            <p class="form-control-static">Entry Title</p>
         </div>
         <div class="form-group">
             <label for="text">Entry:</label>
-            <textarea class="form-control" rows="5" id="text"></textarea>
+            <textarea class="form-control" rows="5" id="text">Entry Text</textarea>
         </div>
-        <button type="submit" class="btn btn-default">Create Entry</button>
+        <button type="submit" class="btn btn-default">Edit Entry</button>
     </div>
 </body>
 </html>
