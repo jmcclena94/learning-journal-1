@@ -27,9 +27,10 @@ def list_view(request):
 
 @view_config(route_name='detail', renderer='templates/detail_template.jinja2')
 def detail_view(request):
+    id = request.matchdict['id']
     entry = DBSession.query(Entry).filter(
-        Entry.id == request.matchdict['id']).first()
-    title = "Learning Journal Entry {}".format(request.matchdict['id'])
+        Entry.id == id).first()
+    title = "Learning Journal Entry {}".format(id)
     return {'entry': entry, 'entry_text': markdown.markdown(entry.text), 'title': title}
 
 
@@ -52,14 +53,13 @@ def add_entry_view(request):
 @view_config(route_name='edit_entry',
              renderer='templates/edit_entry_template.jinja2')
 def edit_entry_view(request):
-    current_entry = DBSession.query(Entry).filter(
-        Entry.id == request.matchdict['id']).first()
+    id = request.matchdict['id']
+    current_entry = DBSession.query(Entry).filter(Entry.id == id).first()
     edited_form = EntryForm(request.POST, current_entry)
     if request.method == 'POST' and edited_form.validate():
         current_entry.title = edited_form.title.data
         current_entry.text = edited_form.text.data
-        return HTTPFound(location='/entry/{id}'.format(
-            id=request.matchdict['id']))
+        return HTTPFound(location='/entry/{id}'.format(id=id))
     return {'title': 'Add Entry', 'form': edited_form}
 
 
