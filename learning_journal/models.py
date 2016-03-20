@@ -17,6 +17,7 @@ from sqlalchemy.orm import (
 from zope.sqlalchemy import ZopeTransactionExtension
 
 import datetime
+import markdown
 
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
@@ -28,5 +29,8 @@ class Entry(Base):
     title = Column(String(length=128, convert_unicode=True), unique=True)
     text = Column(Text(convert_unicode=True))
     created = Column(DateTime, default=datetime.datetime.utcnow)
+
+    def markdown(self):
+        return markdown.markdown(self.text)
 
 Index('my_index', Entry.title, unique=True, mysql_length=255)
