@@ -11,22 +11,22 @@ def test_entry_creation(session):
 def test_list_view(app, one_entry):
     response = app.get('/')
     assert response.status_code == 200
-    actual = response.body
-    assert one_entry.title.encode('utf8') in actual
+    actual = response.text
+    assert one_entry.title in actual
 
 
 def test_entry_view(app, session):
     test_entry = session.query(Entry).filter(Entry.title==u"Test Entry").first()
     url = '/entry/{id}'.format(id=test_entry.id)
     response = app.get(url)
-    assert test_entry.title.encode('utf8') in response.body
-    assert test_entry.text.encode('utf8') in response.body
+    assert test_entry.title in response.text
+    assert test_entry.text in response.text
 
 def test_add_entry_view(app, session):
-    url = '/add_entry'
+    url = '/entry/add'
     response = app.get(url)
     assert response.status_code == 200
-    assert b'<form method="POST">' in response.body
+    assert '<form method="POST">' in response.text
     app.post(url, {'title': 'Add Test', 'text': 'new text'})
     assert session.query(Entry).filter(Entry.title==u"Add Test").first()
 
@@ -36,12 +36,12 @@ def test_edit_entry_view(app, session):
     url = '/entry/{id}/edit'.format(id=one_entry.id)
     response = app.get(url)
     assert response.status_code == 200
-    starting_page = response.body
-    assert one_entry.title.encode('utf8') in starting_page
-    assert one_entry.text.encode('utf8') in starting_page
+    starting_page = response.text
+    assert one_entry.title in starting_page
+    assert one_entry.text in starting_page
     app.post(url, {'title': "New Title", 'text': 'new text'})
     edited_response = app.get(url)
     assert edited_response.status_code == 200
-    edited_page = edited_response.body
-    assert b"New Title" in edited_page
-    assert b"new text" in edited_page
+    edited_page = edited_response.text
+    assert "New Title" in edited_page
+    assert "new text" in edited_page
