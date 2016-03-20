@@ -54,15 +54,13 @@ def add_entry_view(request):
 def edit_entry_view(request):
     current_entry = DBSession.query(Entry).filter(
         Entry.id == request.matchdict['id']).first()
-    entry_form = EntryForm(request.GET, current_entry)
-    edited_form = EntryForm(request.POST)
+    edited_form = EntryForm(request.POST, current_entry)
     if request.method == 'POST' and edited_form.validate():
         current_entry.title = edited_form.title.data
         current_entry.text = edited_form.text.data
         return HTTPFound(location='/entry/{id}'.format(
             id=request.matchdict['id']))
-    entry_form.populate_obj(current_entry)
-    return {'title': 'Add Entry', 'form': entry_form}
+    return {'title': 'Add Entry', 'form': edited_form}
 
 
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
