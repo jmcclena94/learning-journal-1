@@ -1,0 +1,72 @@
+$fontcolor: #F6FFFE;
+
+body {
+    background-color: #2C36FF
+}
+
+.flexbox {
+    display: flex
+}
+
+header {
+    color: $fontcolor;
+    font-family: 'Raleway', sans-serif;
+
+    .main-nav {
+        justify-content: space-around;
+
+        h1 {
+            width: 40%;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .list-nav {
+            width: 60%;
+            list-style-type: none;
+            justify-content: space-around;
+            align-items: center;
+
+            a {
+                text-decoration: none;
+                color: $fontcolor
+            }
+        }
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 3em
+    }
+}
+
+.post-container {
+    flex-direction: column;
+    color: $fontcolor;
+    margin-left: 5%;
+
+    a {
+        text-decoration: none;
+        color: $fontcolor;
+        font-size: 2em;
+    }
+}
+
+.entry-form {
+    margin: 0 auto;
+    width: 35%;
+    flex-direction: column;
+
+    label {
+        color: $fontcolor;
+        margin-top: 10%;
+        margin-bottom: 2%
+    }
+
+    button {
+        width: 30%;
+        margin-top: 2%;
+        align-self: flex-end;
+    }
+
+}

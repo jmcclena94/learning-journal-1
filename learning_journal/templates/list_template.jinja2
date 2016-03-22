@@ -1,8 +1,15 @@
 {% extends "base.jinja2" %}
+
+{% block mainnav %}
+<ul class="flexbox list-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/entry/add">New Entry</a></li>
+</ul>
+{% endblock mainnav %}
+
 {% block content %}
     {% for entry in entries %}
-    <a href="{{ request.route_url("detail", id = entry.id) }}"><h2>{{ entry.title }}</h2></a>
+    <a href="{{ request.route_url("detail", id = entry.id) }}">{{ entry.title }}</a>
     <h4>{{ entry.created }}</h4>
     {% endfor %}
-<a href="{{ request.route_url("add_entry") }}">Add Entry</a>
 {% endblock content %}
