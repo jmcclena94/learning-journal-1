@@ -12,6 +12,7 @@ from .models import (
 
 from wtforms import Form, StringField, TextAreaField, validators
 
+
 class EntryForm(Form):
     title = StringField(u'Title', [validators.required(),
                         validators.length(max=128)])
@@ -60,15 +61,6 @@ def edit_entry_view(request):
         current_entry.text = edited_form.text.data
         return HTTPFound(location='/entry/{id}'.format(id=id))
     return {'title': 'Add Entry', 'form': edited_form}
-
-
-# @view_config(route_name='home', renderer='templates/mytemplate.pt')
-# def my_view(request):
-#     try:
-#         one = DBSession.query(Entry).filter(Entry.name == 'one').first()
-#     except DBAPIError:
-#         return Response(conn_err_msg, content_type='text/plain', status_int=500)
-#     return {'one': one, 'project': 'learning-journal'}
 
 
 conn_err_msg = """\

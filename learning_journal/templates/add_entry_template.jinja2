@@ -1,9 +1,8 @@
 {% extends "base.jinja2" %}
 {% block content %}
-<p>{{ error }}</p>
 <form method="POST">
     <div>{{ form.title.label }}: {{ form.title() }}</div>
     <div>{{ form.text.label }}: {{ form.text() }}</div>
-    <button type="submit">Make Entry</button>
+    <button type="submit">Submit Entry</button>
 </form>
 {% endblock content %}
