@@ -1,8 +1,15 @@
 {% extends "base.jinja2" %}
+
+{% block mainnav %}
+<ul class="flexbox list-nav">
+    <li><a href="/">Home</a></li>
+</ul>
+{% endblock mainnav %}
+
 {% block content %}
 <form method="POST">
-    <div>{{ form.title.label }}: {{ form.title() }}</div>
-    <div>{{ form.text.label }}: {{ form.text() }}</div>
+    <div>{{ form.title.label }} {{ form.title() }}</div>
+    <div>{{ form.text.label }} {{ form.text() }}</div>
     <button type="submit">Submit Entry</button>
 </form>
 {% endblock content %}

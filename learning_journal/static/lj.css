@@ -27,7 +27,12 @@ header {
 
 .post-container {
   flex-direction: column;
-  color: #F6FFFE; }
+  color: #F6FFFE;
+  margin-left: 5%; }
+  .post-container a {
+    text-decoration: none;
+    color: #F6FFFE;
+    font-size: 2em; }
 
 .entry-form {
   margin: 0 auto;

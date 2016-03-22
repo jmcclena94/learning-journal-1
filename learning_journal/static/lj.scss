@@ -42,7 +42,14 @@ header {
 
 .post-container {
     flex-direction: column;
-    color: $fontcolor
+    color: $fontcolor;
+    margin-left: 5%;
+
+    a {
+        text-decoration: none;
+        color: $fontcolor;
+        font-size: 2em;
+    }
 }
 
 .entry-form {
