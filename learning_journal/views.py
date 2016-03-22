@@ -1,6 +1,7 @@
-from pyramid.response import Response
+# from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.security import remember
 
 from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 from sqlalchemy import desc
@@ -10,13 +11,41 @@ from .models import (
     Entry,
     )
 
-from wtforms import Form, StringField, TextAreaField, validators
+from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+
+from .security import check_pw
 
 
 class EntryForm(Form):
     title = StringField(u'Title', [validators.required(),
                         validators.length(max=128)])
     text = TextAreaField(u'Entry', [validators.required()])
+
+
+class LoginForm(Form):
+    usrname = StringField(u'User Name', [validators.required()])
+    pswd = PasswordField(u'Password', [validators.required()])
+
+
+@view_config(route_name='login2', renderer='templates/login2.jinja2')
+def login2_view(request):
+    if request.method == 'POST':
+        username = request.params.get('username', '')
+        password = request.password.get('password', '')
+        if check_pw(password):
+            header = remember(request, username)
+            return HTTPFound('/', headers=header)
+    return {}
+
+
+@view_config(route_name='login', renderer='templates/login.jinja2')
+def login_view(request):
+    login_form = LoginForm(request.POST)
+    if request.method == 'POST' and login_form.validate():
+        usrname = login_form.usrname.data
+        pswd = login_form.pswd.data
+        return HTTPFound(location='/')
+    return {'title': 'Login', 'form': login_form}
 
 
 @view_config(route_name='list', renderer='templates/list_template.jinja2')

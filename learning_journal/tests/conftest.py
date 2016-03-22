@@ -3,6 +3,7 @@ import pytest
 from learning_journal.models import DBSession, Base, Entry
 from sqlalchemy import create_engine
 import transaction
+import os
 
 
 TEST_DATABASE_URL = 'postgres://macuser:@localhost:5432/testdb'
@@ -35,12 +36,13 @@ def dbtransaction(request, sqlengine):
 
     return connection
 
+
 @pytest.fixture()
 def one_entry(session):
     test_entry = Entry(title=u"Test Entry", text=u"Here is my test entry")
     with transaction.manager:
         session.add(test_entry)
-    return session.query(Entry).filter(Entry.title==u"Test Entry").first()
+    return session.query(Entry).filter(Entry.title == u"Test Entry").first()
 
 
 @pytest.fixture()
@@ -52,8 +54,31 @@ def session(dbtransaction):
 @pytest.fixture()
 def app(dbtransaction):
     from learning_journal import main
-    from pyramid.paster import get_appsettings
+    # from pyramid.paster import get_appsettings
     from webtest import TestApp
     fake_settings = {'sqlalchemy.url': TEST_DATABASE_URL}
     app = main({}, **fake_settings)
     return TestApp(app)
+
+
+@pytest.fixture()
+def auth_env():
+    from .security import pwd_context
+    os.environ['AUTH_PASSWORD'] = pwd_context.encrypt('secret')
+    os.environ['AUTH_USERNAME'] = 'admin'
+
+
+@pytest.fixture()
+def authenticated_app(app, auth_env):
+    data = {'username': 'admin', 'password': 'secret'}
+    app.post('/login', data)
+    return app
+
+
+# @pytest.fixture()
+# def app2():
+#     from learning_journal import main
+#     from webtest import TestApp
+#     settings = {}
+#     app2 = main({}, **settings)
+#     return webtest.TestApp(app2)
