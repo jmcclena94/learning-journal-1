@@ -73,12 +73,3 @@ def authenticated_app(app, auth_env):
     data = {'username': 'admin', 'password': 'secret'}
     app.post('/login', data)
     return app
-
-
-# @pytest.fixture()
-# def app2():
-#     from learning_journal import main
-#     from webtest import TestApp
-#     settings = {}
-#     app2 = main({}, **settings)
-#     return webtest.TestApp(app2)

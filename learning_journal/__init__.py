@@ -10,16 +10,7 @@ from .models import (
 
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from pyramid.security import Allow, Everyone, groupfinder
-
-
-class MyRoot(object):
-    __acl__ = [
-        (Allow, Authenticated, 'gonzo')
-    ]
-
-    def __init__(self, request):
-        self.request = request
+from pyramid.security import groupfinder
 
 
 def main(global_config, **settings):
