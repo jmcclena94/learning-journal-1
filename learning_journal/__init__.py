@@ -1,6 +1,7 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 import os
+from .security import MyRoot
 
 from .models import (
     DBSession,
@@ -10,7 +11,8 @@ from .models import (
 
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from pyramid.security import groupfinder
+
+# from pyramid.session import SignedCookieSessionFactory
 
 
 def main(global_config, **settings):
@@ -21,18 +23,19 @@ def main(global_config, **settings):
     Base.metadata.bind = engine
 
     auth_secret = os.environ.get('LJ_AUTH')
-    authentication_policy = AuthTktAuthenticationPolicy(
-        secret=auth_secret,
-        hashalg='sha512',
-        callback=groupfinder,
-    )
-    authorization_policy = ACLAuthorizationPolicy()
+    # authentication_policy = AuthTktAuthenticationPolicy(
+    #     secret=auth_secret,
+    #     hashalg='sha512',
+    # )
+    # authorization_policy = ACLAuthorizationPolicy()
 
     config = Configurator(
         settings=settings,
-        authentication_policy=authentication_policy,
-        authorization_policy=authorization_policy,
+        # root_factory=MyRoot,
         )
+
+    # config.set_authentication_policy(authentication_policy)
+    # config.set_authorization_policy(authorization_policy)
 
     config.include('pyramid_jinja2')
     config.add_static_view('static', 'static', cache_max_age=3600)
@@ -41,5 +44,6 @@ def main(global_config, **settings):
     config.add_route('detail', '/entry/{id:\d+}')
     config.add_route('add_entry', '/entry/add')
     config.add_route('edit_entry', '/entry/{id}/edit')
+    config.add_route('logout', '/logout')
     config.scan()
     return config.make_wsgi_app()

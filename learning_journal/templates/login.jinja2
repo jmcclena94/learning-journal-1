@@ -6,9 +6,9 @@
 {% endblock mainnav %}
 
 {% block content %}
-<form method="POST">
-    <div>{{ form.usrname.label }} {{ form.usrname() }}</div>
-    <div>{{ form.pswd.label }} {{ form.pswd() }}</div>
+<form class="flexbox entry-form" method="POST">
+    {{ form.usrname.label }} {{ form.usrname() }}
+    {{ form.pswd.label }} {{ form.pswd() }}
     <button type="submit">Login</button>
 </form>
 {% endblock content %}

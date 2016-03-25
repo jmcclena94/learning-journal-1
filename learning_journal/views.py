@@ -1,10 +1,13 @@
 # from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
-from pyramid.security import remember
+from pyramid.httpexceptions import HTTPFound
+from pyramid.security import remember, forget
+from passlib.hash import sha256_crypt
 
-from sqlalchemy.exc import DBAPIError, SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import desc
+
+import os
 
 from .models import (
     DBSession,
@@ -13,7 +16,7 @@ from .models import (
 
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 
-from .security import check_pw
+# from .security import check_pw
 
 
 class EntryForm(Form):
@@ -27,34 +30,32 @@ class LoginForm(Form):
     pswd = PasswordField(u'Password', [validators.required()])
 
 
-@view_config(route_name='login2', renderer='templates/login2.jinja2')
-def login2_view(request):
-    if request.method == 'POST':
-        username = request.params.get('username', '')
-        password = request.password.get('password', '')
-        if check_pw(password):
-            header = remember(request, username)
-            return HTTPFound('/', headers=header)
-    return {}
-
-
-@view_config(route_name='login', renderer='templates/login.jinja2')
+@view_config(route_name='login', renderer='templates/login.jinja2',
+             permission='read')
 def login_view(request):
+    """Login page view."""
     login_form = LoginForm(request.POST)
     if request.method == 'POST' and login_form.validate():
         usrname = login_form.usrname.data
         pswd = login_form.pswd.data
-        return HTTPFound(location='/')
+        usrcheck = usrname == 'owner'
+        pwdcheck = sha256_crypt.verify(pswd, os.environ.get('LJ_AUTH'))
+        if usrcheck and pwdcheck:
+            headers = remember(request, usrname)
+            return HTTPFound(request.route_url('list'), headers=headers)
+        return HTTPFound(request.route_url('login'))
     return {'title': 'Login', 'form': login_form}
 
 
-@view_config(route_name='list', renderer='templates/list_template.jinja2')
+@view_config(route_name='list', renderer='templates/list_template.jinja2',
+             permission='read')
 def list_view(request):
     entries = DBSession.query(Entry).order_by(desc(Entry.created))
     return {'entries': entries, 'title': 'Learning Journal'}
 
 
-@view_config(route_name='detail', renderer='templates/detail_template.jinja2')
+@view_config(route_name='detail', renderer='templates/detail_template.jinja2',
+             permission='read')
 def detail_view(request):
     id = request.matchdict['id']
     entry = DBSession.query(Entry).filter(
@@ -64,7 +65,8 @@ def detail_view(request):
 
 
 @view_config(route_name='add_entry',
-             renderer='templates/add_entry_template.jinja2')
+             renderer='templates/add_entry_template.jinja2',
+             permission='create')
 def add_entry_view(request):
     entry_form = EntryForm(request.POST)
     if request.method == 'POST' and entry_form.validate():
@@ -75,12 +77,13 @@ def add_entry_view(request):
         except SQLAlchemyError:
             return {'title': 'Add Entry', 'form': entry_form,
                     'error': 'Title Already Used'}
-        return HTTPFound(location='/')
+        return HTTPFound(request.route_url('list'))
     return {'title': 'Add Entry', 'form': entry_form}
 
 
 @view_config(route_name='edit_entry',
-             renderer='templates/edit_entry_template.jinja2')
+             renderer='templates/edit_entry_template.jinja2',
+             permission='edit')
 def edit_entry_view(request):
     id = request.matchdict['id']
     current_entry = DBSession.query(Entry).filter(Entry.id == id).first()
@@ -90,6 +93,13 @@ def edit_entry_view(request):
         current_entry.text = edited_form.text.data
         return HTTPFound(location='/entry/{id}'.format(id=id))
     return {'title': 'Add Entry', 'form': edited_form}
+
+
+@view_config(route_name='logout')
+def logout_view(request):
+    """Logout."""
+    headers = forget(request)
+    return HTTPFound(request.route_url('list'), headers=headers)
 
 
 conn_err_msg = """\

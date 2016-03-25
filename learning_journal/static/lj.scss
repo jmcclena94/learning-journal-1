@@ -63,10 +63,19 @@ header {
         margin-bottom: 2%
     }
 
+    input {
+        background-color: black;
+    }
+
+    textarea#text {
+        background-color: black;
+    }
+
     button {
         width: 30%;
         margin-top: 2%;
         align-self: flex-end;
+        background-color: black;
     }
 
 }

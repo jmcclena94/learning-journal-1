@@ -4,9 +4,10 @@ from learning_journal.models import DBSession, Base, Entry
 from sqlalchemy import create_engine
 import transaction
 import os
+from passlib.hash import sha256_crypt
 
 
-TEST_DATABASE_URL = 'postgres://macuser:@localhost:5432/testdb'
+TEST_DATABASE_URL = 'postgres://joemcc:@localhost:5432/entry'
 
 
 @pytest.fixture(scope='session')
@@ -63,8 +64,7 @@ def app(dbtransaction):
 
 @pytest.fixture()
 def auth_env():
-    from .security import pwd_context
-    os.environ['AUTH_PASSWORD'] = pwd_context.encrypt('secret')
+    os.environ['AUTH_PASSWORD'] = sha256_crypt.encrypt('secret')
     os.environ['AUTH_USERNAME'] = 'admin'
 
 
