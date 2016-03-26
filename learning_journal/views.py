@@ -1,6 +1,6 @@
 # from pyramid.response import Response
 from pyramid.view import view_config
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.security import remember, forget
 from passlib.hash import sha256_crypt
 
@@ -16,8 +16,6 @@ from .models import (
 
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 
-# from .security import check_pw
-
 
 class EntryForm(Form):
     title = StringField(u'Title', [validators.required(),
@@ -31,36 +29,40 @@ class LoginForm(Form):
 
 
 @view_config(route_name='login', renderer='templates/login.jinja2',
-             permission='read')
+             permission='view')
 def login_view(request):
     """Login page view."""
     login_form = LoginForm(request.POST)
     if request.method == 'POST' and login_form.validate():
-        usrname = login_form.usrname.data
-        pswd = login_form.pswd.data
+        usrname = request.params.get('usrname')
+        pswd = request.params.get('pswd')
+        # usrname = login_form.usrname.data
+        # pswd = login_form.pswd.data
         usrcheck = usrname == 'owner'
         pwdcheck = sha256_crypt.verify(pswd, os.environ.get('LJ_AUTH'))
         if usrcheck and pwdcheck:
             headers = remember(request, usrname)
             return HTTPFound(request.route_url('list'), headers=headers)
-        return HTTPFound(request.route_url('login'))
+        return HTTPForbidden()
+        # return HTTPFound(request.route_url('login'))
     return {'title': 'Login', 'form': login_form}
 
 
 @view_config(route_name='list', renderer='templates/list_template.jinja2',
-             permission='read')
+             permission='view')
 def list_view(request):
     entries = DBSession.query(Entry).order_by(desc(Entry.created))
     return {'entries': entries, 'title': 'Learning Journal'}
 
 
 @view_config(route_name='detail', renderer='templates/detail_template.jinja2',
-             permission='read')
+             permission='view')
 def detail_view(request):
     id = request.matchdict['id']
     entry = DBSession.query(Entry).filter(
         Entry.id == id).first()
-    title = "Learning Journal Entry {}".format(id)
+    title = "{}".format(entry.title)
+    # title = "Learning Journal Entry {}".format(id)
     return {'entry': entry, 'entry_text': entry.markdown(), 'title': title}
 
 

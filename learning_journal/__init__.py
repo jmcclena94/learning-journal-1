@@ -23,19 +23,19 @@ def main(global_config, **settings):
     Base.metadata.bind = engine
 
     auth_secret = os.environ.get('LJ_AUTH')
-    # authentication_policy = AuthTktAuthenticationPolicy(
-    #     secret=auth_secret,
-    #     hashalg='sha512',
-    # )
-    # authorization_policy = ACLAuthorizationPolicy()
+    authentication_policy = AuthTktAuthenticationPolicy(
+        secret=auth_secret,
+        hashalg='sha512',
+    )
+    authorization_policy = ACLAuthorizationPolicy()
 
     config = Configurator(
         settings=settings,
-        # root_factory=MyRoot,
+        root_factory=MyRoot,
         )
 
-    # config.set_authentication_policy(authentication_policy)
-    # config.set_authorization_policy(authorization_policy)
+    config.set_authentication_policy(authentication_policy)
+    config.set_authorization_policy(authorization_policy)
 
     config.include('pyramid_jinja2')
     config.add_static_view('static', 'static', cache_max_age=3600)

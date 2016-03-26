@@ -3,7 +3,13 @@
 {% block mainnav %}
 <ul class="flexbox list-nav">
     <li><a href="/">Home</a></li>
+    {% if request.has_permission('create') %}
     <li><a href="/entry/add">New Entry</a></li>
+    {% endif %}
+    {% if request.has_permission('create') %}
+    <li><a href="/logout">Logout</a></li>
+    {% endif %}
+
 </ul>
 {% endblock mainnav %}
 

@@ -17,6 +17,8 @@ def test_list_view(app, one_entry):
 
 
 def test_entry_view(app, session):
+    app.post('/login', {
+        'usrname': 'owner', 'pswd': os.environ.get('TEST_LJ_PW')})
     test_entry = session.query(Entry).filter(Entry.title == u"Test Entry"
                                              ).first()
     url = '/entry/{id}'.format(id=test_entry.id)
@@ -26,15 +28,19 @@ def test_entry_view(app, session):
 
 
 def test_add_entry_view(app, session):
+    app.post('/login', {
+        'usrname': 'owner', 'pswd': os.environ.get('TEST_LJ_PW')})
     url = '/entry/add'
     response = app.get(url)
     assert response.status_code == 200
-    assert '<form method="POST">' in response.text
+    assert '<form class="flexbox entry-form" method="POST">' in response.text
     app.post(url, {'title': 'Add Test', 'text': 'new text'})
     assert session.query(Entry).filter(Entry.title == u"Add Test").first()
 
 
-def test_edit_entry_view(app, session):
+def test_edit_entry_view(app, session, auth_env):
+    app.post('/login', {
+        'usrname': 'owner', 'pswd': os.environ.get('TEST_LJ_PW')})
     one_entry = session.query(Entry).filter(Entry.title == u"Test Entry"
                                             ).first()
     url = '/entry/{id}/edit'.format(id=one_entry.id)
@@ -51,8 +57,13 @@ def test_edit_entry_view(app, session):
     assert "new text" in edited_page
 
 
-def test_no_access_to_view(app):
+def test_no_access_to_add_view(app):
     response = app.get('/entry/add', status=403)
+    assert response.status_code == 403
+
+
+def test_no_access_to_edit_view(app):
+    response = app.get('/entry/1/edit', status=403)
     assert response.status_code == 403
 
 
@@ -64,36 +75,23 @@ def test_username_exist(app, auth_env):
     assert os.environ.get('AUTH_USERNAME') is not None
 
 
-# def test_check_pw_success(auth_env):
-#     from .security import check_pw
-#     password = 'secret'
-#     assert check_pw(password)
-
-
 def test_stored_password_is_encrypted(auth_env):
     assert os.environ.get('AUTH_PASSWORD') != 'secret'
 
 
-# def test_check_ps_fails(auth_env):
-#     from .security import check_pw
-#     password = 'notsecret'
-#     assert not check_pw(password)
-#
+def test_login_view_good(app, auth_env, session):
+    url = '/login'
+    response = app.post(url, {
+        'usrname': 'owner', 'pswd': os.environ.get('TEST_LJ_PW')})
+    assert response.status_code == 302
 
-# def test_post_login_success(app, authenv):
-#     data = {'username': 'admin', 'password': 'secret'}
-#     response = app.post('/login', data)
-#     assert response.status_code == 200
-#
 
-# def test_post_login_success_auth_tkt_present(app, auth_env):
-#     data = {'username': 'admin', 'password': 'secret'}
-#     response = app.post('/login', data)
-#     headers = response.headers
-#     cookies_set = headers.getall('Set-Cookie')
-#     assert cookies_set
-#     for cookie in cookies_set:
-#         if cookie.startswith('auth_tkt'):
-#             break
-#     else:
-#         assert False
+def test_login_view_bad(app, auth_env, session):
+    url = '/login'
+    response = app.post(url, {'usrname': 'owner', 'pswd': 'bad'}, status=403)
+    assert response.status_code == 403
+
+
+def test_logout_view(app, session):
+    response = app.get('/logout')
+    assert response.status_code == 302

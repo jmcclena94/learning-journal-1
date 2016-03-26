@@ -55,7 +55,6 @@ def session(dbtransaction):
 @pytest.fixture()
 def app(dbtransaction):
     from learning_journal import main
-    # from pyramid.paster import get_appsettings
     from webtest import TestApp
     fake_settings = {'sqlalchemy.url': TEST_DATABASE_URL}
     app = main({}, **fake_settings)
