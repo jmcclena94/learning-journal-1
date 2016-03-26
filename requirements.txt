@@ -3,6 +3,7 @@ Mako==1.0.4
 Markdown==2.6.6
 MarkupSafe==0.23
 passlib==1.6.5
+Paste==2.0.3
 PasteDeploy==1.5.2
 pluggy==0.3.1
 psycopg2==2.6.1

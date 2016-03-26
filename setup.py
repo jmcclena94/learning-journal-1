@@ -21,6 +21,8 @@ requires = [
     'markdown',
     'passlib',
     'Markdown',
+    'paste',
+    'PasteDeploy',
     ]
 test_requires = ['pytest', 'pytest-watch', 'tox', 'webtest']
 dev_requires = ['ipython', 'pyramid-ipython']
