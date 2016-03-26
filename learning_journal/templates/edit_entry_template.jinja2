@@ -3,13 +3,14 @@
 {% block mainnav %}
 <ul class="flexbox list-nav">
     <li><a href="/">Home</a></li>
+    <li><a href="/logout">Logout</a></li>
 </ul>
 {% endblock mainnav %}
 
 {% block content %}
-<form method="POST">
-    <div>{{ form.title.label }} {{ form.title() }}</div>
-    <div>{{ form.text.label }} {{ form.text() }}</div>
+<form class="flexbox entry-form" method="POST">
+    {{ form.title.label }} {{ form.title() }}
+    {{ form.text.label }} {{ form.text() }}
     <button type="submit">Edit Entry</button>
 </form>
 {% endblock content %}

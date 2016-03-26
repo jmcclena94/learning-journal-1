@@ -42,9 +42,14 @@ header {
     color: #F6FFFE;
     margin-top: 10%;
     margin-bottom: 2%; }
+  .entry-form input {
+    background-color: black; }
+  .entry-form textarea#text {
+    background-color: black; }
   .entry-form button {
     width: 30%;
     margin-top: 2%;
-    align-self: flex-end; }
+    align-self: flex-end;
+    background-color: black; }
 
 /*# sourceMappingURL=lj.css.map */

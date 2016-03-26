@@ -1,0 +1,14 @@
+{% extends "base.jinja2" %}
+
+{% block mainnav %}
+<ul class="flexbox list-nav">
+</ul>
+{% endblock mainnav %}
+
+{% block content %}
+<form class="flexbox entry-form" method="POST">
+    {{ form.usrname.label }} {{ form.usrname() }}
+    {{ form.pswd.label }} {{ form.pswd() }}
+    <button type="submit">Login</button>
+</form>
+{% endblock content %}

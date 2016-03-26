@@ -40,4 +40,3 @@ def main(argv=sys.argv):
         DBSession.add(entry1)
         entry2 = Entry(title=u"Oh hey here is another entry.", text=u'This is a better test.')
         DBSession.add(entry2)
-
