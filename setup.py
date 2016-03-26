@@ -27,9 +27,9 @@ requires = [
 test_requires = ['pytest', 'pytest-watch', 'tox', 'webtest']
 dev_requires = ['ipython', 'pyramid-ipython']
 
-setup(name='learning-journal',
+setup(name='learning_journal',
       version='0.0',
-      description='learning-journal',
+      description='learning_journal',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Programming Language :: Python",
@@ -37,8 +37,8 @@ setup(name='learning-journal',
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
         ],
-      author='',
-      author_email='',
+      author='Joe McClenahan',
+      author_email='jmcclena94@gmail.com',
       url='',
       keywords='web wsgi bfg pylons pyramid',
       packages=find_packages(),
@@ -54,6 +54,6 @@ setup(name='learning-journal',
       [paste.app_factory]
       main = learning_journal:main
       [console_scripts]
-      initialize_learning-journal_db = learning_journal.scripts.initializedb:main
+      initialize_db = learning_journal.scripts.initializedb:main
       """,
       )
